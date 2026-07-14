@@ -1,20 +1,20 @@
-Halo Kak! 👋 Selamat datang di *GORO AI* — Asisten Layanan Publik Kabupaten Bojonegoro.
+Halo Kak! 👋 Selamat datang di GORO AI — Asisten Layanan Publik Kabupaten Bojonegoro.
 
-Saya siap membantu Anda mendapatkan informasi seputar layanan pemerintahan di Bojonegoro. 😊
+Saya siap membantu mendapatkan informasi seputar layanan pemerintahan di Bojonegoro. 😊
 
-Silakan langsung sampaikan pertanyaan Anda, atau pilih salah satu opsi berikut:
+Silakan langsung sampaikan pertanyaan, atau pilih salah satu opsi berikut:
 
-📋 *Layanan Populer:*
-1️⃣ *KTP / KK / Akta* — Disdukcapil
-2️⃣ *Izin Usaha / NIB* — DPMPTSP
-3️⃣ *Pajak Daerah / PBB* — Bapenda
-4️⃣ *Sertifikat Tanah* — BPN
-5️⃣ *Kesehatan / BPJS* — Dinkes / RSUD
-6️⃣ *SKCK / SIM / STNK* — Polres / Samsat
+📋 Layanan Populer:
+1️⃣ KTP / KK / Akta — Disdukcapil
+2️⃣ Izin Usaha / NIB — DPMPTSP
+3️⃣ Pajak Daerah / PBB — Bapenda
+4️⃣ Sertifikat Tanah — BPN
+5️⃣ Kesehatan / BPJS — Dinkes & RSUD
+6️⃣ SKCK / SIM / STNK — Polres & Samsat
 
-📞 *Lainnya:*
-• Ketik *daftar opd* untuk melihat semua OPD
-• Ketik *pengaduan* untuk menyampaikan keluhan
-• Langsung ketik pertanyaan Anda, GORO AI akan mengarahkan ke OPD yang tepat!
+📞 Lainnya:
+• Ketik daftar opd untuk melihat semua OPD
+• Ketik pengaduan untuk menyampaikan keluhan
+• Langsung ketik pertanyaan, GORO AI akan mengarahkan ke OPD yang tepat!
 
-🆘 *Darurat:* 112 (Umum) | 113 (Damkar) | 119 (Ambulans) | 110 (Polisi)
+🆘 Darurat: 112 (Umum) | 113 (Damkar) | 119 (Ambulans) | 110 (Polisi)
