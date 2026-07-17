@@ -1,0 +1,78 @@
+DOKUMENTASI PEMBARUAN PUBLIC DEMAND -> GOVERNMENT INTELLIGENCE PLATFORM
+======================================================================
+Dokumen ini merangkum pembaruan struktural dan fungsional pada Goro AI untuk menjadikannya Platform Intelijen Pemerintah (Data-Driven Government Intelligence) berdasarkan riwayat pengembangan terbaru. Informasi ini dapat digunakan sebagai referensi untuk pengembangan (development) selanjutnya.
+
+1. PEMBARUAN DATABASE (Skema & Repository)
+-------------------------------------------
+File Terkait:
+- create_public_demand_tables.sql
+- config/repositories/public_demand.repository.js
+
+a) Penambahan Kolom pada Tabel 'public_demand_topics':
+   - demand_score (INTEGER): Skor kebutuhan agregat (0-100).
+   - impact_score (INTEGER): Skor dampak berdasarkan volume dan sebaran lokasi keluhan (0-100).
+   - effectiveness_score (INTEGER): Skor persentase tingkat keberhasilan SOP/Knowledge (0-100).
+   - citizen_understanding_score (INTEGER): Skor pemahaman bahasa berdasarkan sentimen balasan pengguna (0-100).
+   - prediction_score (INTEGER): Skor ancaman prediksi (0-100) berdasarkan tren time-series.
+   - issue_status (TEXT): Melacak siklus hidup isu ("Baru Muncul", "Sedang Naik", "Puncak", "Menurun", "Selesai", "Stabil").
+   - trend_percentage (NUMERIC): Persentase prediksi pertumbuhan/penurunan isu.
+   - first_detected_at (TIMESTAMP): Waktu isu pertama kali dikenali.
+
+b) Penambahan Kolom pada Tabel 'public_demand_logs':
+   - location (TEXT): Untuk merekam lokasi (Kecamatan/Desa) dari mana keluhan/pertanyaan diajukan. Lokasi ini diekstrak otomatis oleh AI.
+
+c) Tabel Baru 'executive_summaries':
+   Menyimpan laporan naratif otomatis. Terdiri dari kolom: report_type, report_date, summary_content, total_conversations, top_topics, active_opds, knowledge_gaps, anomalies, recommendations.
+
+2. PENAMBAHAN AI ANALYTICS ENGINES BARU
+-------------------------------------------
+Lokasi: agent/core/engines/
+
+a) impact_engine.js
+   Menghitung 'Impact Score' dengan memberikan bobot 40% pada volume (jumlah pertanyaan) dan 60% pada sebaran lokasi wilayah. Isu yang menyebar ke banyak kecamatan akan mendapat skor lebih tinggi.
+
+b) knowledge_effectiveness_engine.js
+   Menganalisis perbandingan volume pertanyaan sebelum adanya Knowledge/SOP vs sesudahnya. AI mengeluarkan status seperti "Knowledge Gap (Kritis)", "Perlu Revisi", atau "Sangat Efektif".
+
+c) citizen_understanding_engine.js
+   Memproses feedback lanjutan dari warga (misal: "terima kasih" vs "saya tidak paham") menggunakan NLP untuk mengevaluasi apakah narasi/bahasa jawaban mudah dipahami (Citizen Understanding Score).
+
+d) prediction_engine.js
+   Menggunakan regresi linier pada data time-series (historis 3-4 minggu ke belakang) untuk memprediksi puncak tren di minggu mendatang, sekaligus menghitung persentase tren.
+
+e) opd_performance_engine.js
+   Melakukan agregasi (pengelompokan) data per OPD. Mengkompilasi total pertanyaan, jumlah SOP yang kurang, topik terbanyak, dsb., untuk setiap entitas pemerintah.
+
+f) executive_summary_engine.js
+   Mengirimkan prompt komprehensif ke OpenAI untuk menulis narasi "Laporan Eksekutif" otomatis berdasarkan angka mentah (raw metrics). Menghasilkan laporan berformat Markdown yang berisi ringkasan, highlight masalah, dan rekomendasi aksi nyata (actionable).
+
+3. REFACTORING & ORKESTRASI
+-------------------------------------------
+a) public_demand_engine.js
+   Telah dirombak menjadi orkestrator pusat. Ketika ada pertanyaan masuk, ia akan memanggil semua mesin di atas (Impact, Effectiveness, Prediction, dll.) secara *asynchronous* (.catch()) di background agar tidak menghentikan arus respons chat utama.
+   
+b) topic_classifier.js
+   Prompt sistem diubah untuk mengekstrak param 'location' dari kalimat warga agar dapat diteruskan ke mesin Impact.
+
+4. SISTEM BACKGROUND WORKER
+-------------------------------------------
+File Terkait: scripts/background_worker.js
+Sistem cron-job ini bertugas merangkum keseluruhan analitik yang terkumpul pada hari/minggu tersebut, memanggil 'executive_summary_engine', lalu memasukkan hasil laporannya ke database ('executive_summaries' table). Script ini independen dan bisa di-run via Node.js atau PM2 scheduler.
+
+5. API LAYER & DASHBOARD ENDPOINTS
+-------------------------------------------
+File Terkait: 
+- api/controllers/dashboard.controller.js
+- api/routes/dashboard.routes.js
+- api/server.js
+
+Telah ditambahkan jalur (routes) baru untuk mengekspos data mentah ke Frontend Dashboard Eksekutif Pemerintah, dengan endpoint:
+- GET /api/dashboard/overview : Mengembalikan JSON berisi Top 10 Pertanyaan, Trending, Gap Pengetahuan, dan Statistik OPD.
+- GET /api/dashboard/executive-summaries : Menarik daftar laporan naratif AI terakhir.
+(Endpoint ini diintegrasikan ke api/server.js di URL "/api/dashboard/*").
+
+PETUNJUK PENGEMBANGAN SELANJUTNYA:
+-----------------------------------
+1. Anda perlu menjalankan file 'create_public_demand_tables.sql' di SQL Editor Supabase untuk mengaplikasikan struktur baru.
+2. Anda bisa mengatur 'cron job' atau 'PM2 scheduler' untuk menjalankan 'scripts/background_worker.js' secara reguler setiap malam.
+3. Anda bisa menggunakan Framework Frontend (React/Vue/Next.js) untuk memanggil 'http://localhost:PORT/api/dashboard/overview' guna membuat visualisasi grafik untuk Bupati/Kepala OPD.

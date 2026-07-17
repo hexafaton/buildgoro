@@ -1,0 +1,37 @@
+Berikut adalah ringkasan pembaruan dan fitur-fitur baru dalam sistem Chatbot Goro berdasarkan riwayat perubahan (commit) terbaru:
+
+1. Integrasi Database & Repositori Data Baru
+   - Sistem kini terintegrasi dengan Supabase (penambahan konfigurasi dan provider Supabase).
+   - Penambahan skema database SQL baru (`create_public_demand_tables.sql` dan `knowledge_rows.sql`).
+   - Penambahan banyak repositori baru untuk manajemen data seperti:
+     - Kontak (`contacts.repository.js`)
+     - FAQ (`faq.repository.js`)
+     - Manajemen File (`files.repository.js`)
+     - Pengetahuan/Knowledge (`knowledge.repository.js`)
+     - Organisasi Perangkat Daerah/OPD (`opd.repository.js`)
+     - Layanan dan Permintaan Publik (`services.repository.js`, `public_demand.repository.js`)
+
+2. Mesin (Engines) Baru pada Core Agent
+   Sistem agen menjadi jauh lebih cerdas dengan tambahan beberapa mesin pemrosesan:
+   - Citation & Context Builder: Membangun konteks percakapan dan kutipan yang lebih baik.
+   - Knowledge Freshness, Ranking, & Relationship: Mengelola, mengurutkan, dan menghubungkan basis pengetahuan agar jawaban relevan dan up-to-date.
+   - Public Demand Engine: Mesin untuk menangani permintaan publik.
+   - Query Normalizer & Topic Classifier: Memproses, menormalkan pertanyaan pengguna, serta mengklasifikasikan topik pertanyaan.
+
+3. Pengoptimalan AI & Arsitektur Sistem
+   - Modul `ai_router.js` ditambahkan untuk merutekan permintaan AI secara lebih cerdas.
+   - Sistem memori yang diperbarui dengan `conversation_memory.js` untuk mengingat konteks percakapan secara efisien.
+   - Perombakan pada cara kerja task flow (alur tugas), executor (eksekutor), dan penghapusan modul lama seperti `planner.js` dan memori jangka pendek yang diganti dengan sistem baru.
+   - Penambahan `analytics_service.js` dan fitur monitoring.
+   - Penyediaan fitur Cache (`utils/cache.js`) untuk mempercepat respon.
+   - Prompt sistem juga diperbarui agar lebih akurat dalam merespon.
+
+4. Transisi Sistem & Keamanan (Guardrails)
+   - Adanya migrasi sistem (Alih Goro AI) yang menghapus banyak file autentikasi bot WhatsApp (`.baileys_auth`) lama.
+   - Sistem kini dibekali pengamanan ekstra:
+     - Guardrails (`guardrails.js`, `guardrail_checker.js`) untuk mencegah respon AI yang melanggar batas/tidak pantas.
+     - Escalation Rules (`escalation_rules.js`) untuk aturan eskalasi masalah.
+   - Penambahan Registri OPD (`opd_registry.js`) yang sangat komprehensif.
+
+5. Dokumentasi
+   - Penambahan panduan lengkap untuk deployment ke VPS (`DEPLOY_VPS.md`).

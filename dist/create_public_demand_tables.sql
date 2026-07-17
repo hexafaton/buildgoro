@@ -28,6 +28,17 @@ CREATE TABLE IF NOT EXISTS public.public_demand_topics (
     knowledge_effectiveness TEXT DEFAULT 'Belum Dievaluasi',
     ai_recommendation TEXT,
     
+    -- Government Intelligence Scores
+    demand_score INTEGER DEFAULT 0,
+    impact_score INTEGER DEFAULT 0,
+    effectiveness_score INTEGER DEFAULT 0,
+    citizen_understanding_score INTEGER DEFAULT 0,
+    prediction_score INTEGER DEFAULT 0,
+    issue_status TEXT DEFAULT 'Baru Muncul',
+    trend_percentage NUMERIC(5,2) DEFAULT 0,
+    
+    first_detected_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
     last_asked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -58,6 +69,7 @@ CREATE TABLE IF NOT EXISTS public.public_demand_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     topic_id UUID REFERENCES public.public_demand_topics(id) ON DELETE CASCADE,
     user_question TEXT NOT NULL,
+    location TEXT,
     knowledge_was_found BOOLEAN DEFAULT false,
     asked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -68,6 +80,24 @@ CREATE INDEX IF NOT EXISTS idx_demand_logs_asked_at ON public.public_demand_logs
 -- Mematikan RLS secara eksplisit
 ALTER TABLE public.public_demand_topics DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.public_demand_logs DISABLE ROW LEVEL SECURITY;
+
+-- 3. TABEL EXECUTIVE SUMMARIES (Laporan Otomatis)
+CREATE TABLE IF NOT EXISTS public.executive_summaries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    report_type TEXT NOT NULL, -- 'Daily', 'Weekly', 'Monthly'
+    report_date DATE NOT NULL,
+    summary_content TEXT NOT NULL,
+    total_conversations INTEGER DEFAULT 0,
+    top_topics JSONB,
+    active_opds JSONB,
+    knowledge_gaps JSONB,
+    anomalies JSONB,
+    recommendations JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.executive_summaries DISABLE ROW LEVEL SECURITY;
+
 
 -- =========================================================================
 -- INSTRUKSI ADMIN:
