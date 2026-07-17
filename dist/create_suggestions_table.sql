@@ -4,6 +4,9 @@
 -- Jalankan script ini di SQL Editor pada Dashboard Supabase Anda.
 -- =========================================================================
 
+-- Hapus tabel lama jika ada agar bisa mengulang pengaturan RLS dari awal
+DROP TABLE IF EXISTS public.ai_knowledge_suggestions CASCADE;
+
 CREATE TABLE IF NOT EXISTS public.ai_knowledge_suggestions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     question TEXT NOT NULL,
@@ -43,6 +46,9 @@ CREATE TRIGGER update_ai_knowledge_suggestions_modtime
 BEFORE UPDATE ON public.ai_knowledge_suggestions
 FOR EACH ROW
 EXECUTE FUNCTION update_suggestions_updated_at_column();
+
+-- Mematikan RLS secara eksplisit agar bot bebas melakukan Insert
+ALTER TABLE public.ai_knowledge_suggestions DISABLE ROW LEVEL SECURITY;
 
 -- =========================================================================
 -- INSTRUKSI ADMIN:
