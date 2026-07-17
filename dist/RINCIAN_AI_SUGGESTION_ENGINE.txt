@@ -1,0 +1,45 @@
+RINCIAN IMPLEMENTASI AI KNOWLEDGE SUGGESTION ENGINE (LEARNING SYSTEM)
+====================================================================
+
+Berikut adalah rincian lengkap mengenai fitur baru yang menjadikan Goro AI mampu "belajar mandiri" dari pertanyaan warga yang belum ada jawabannya di database resmi. 
+
+Semua perubahan dilakukan dengan sangat hati-hati:
+1. TIDAK mengubah arsitektur lama (Web Search Tavily tetap berjalan normal).
+2. TIDAK memasukkan data langsung ke tabel resmi (tetap wajib melalui persetujuan Admin).
+3. TIDAK membuat file tampilan Dashboard apapun (hanya file Engine Backend murni).
+
+Berikut 5 perubahan utama yang telah diimplementasikan:
+
+1. FILE SQL PEMBUATAN TABEL BARU
+---------------------------------------------------------
+- Nama File: create_suggestions_table.sql (Terletak di folder utama proyek)
+- Fungsi: Berisi instruksi database (SQL) untuk membuat tabel "ai_knowledge_suggestions".
+- Cara Pakai: File ini sudah siap untuk Anda copy lalu paste ke dalam fitur "SQL Editor" di dasbor Supabase Anda. Tabel ini otomatis mendeteksi status, frekuensi pertanyaan, dan tanggal modifikasi.
+
+2. PENYUNTINGAN FILE EXECUTOR (agent/core/executor.js)
+---------------------------------------------------------
+- Fungsi: Otak utama Goro AI saat merespons warga.
+- Perubahan: Saya menambahkan satu blok kode di bagian akhir. Jika AI mendeteksi bahwa informasi yang ditanyakan warga *TIDAK ADA* di dalam Supabase, executor akan diam-diam mengirim "sinyal asinkron" ke Suggestion Engine. Karena ini berjalan di latar belakang (background task), kecepatan balas chat ke warga tidak akan melambat sama sekali!
+
+3. QUERY NORMALIZER (agent/core/engines/query_normalizer.js)
+---------------------------------------------------------
+- Fungsi: Mengubah gaya bahasa warga yang berantakan menjadi 1 topik baku.
+- Contoh: Jika ada warga bertanya "Min, info pendaftaran nikah massal dong?", sistem akan memanggil OpenAI khusus untuk menerjemahkannya menjadi "Pendaftaran Nikah Massal". Ini sangat penting agar pertanyaan serupa bisa dikelompokkan dengan presisi.
+
+4. DRAFT GENERATOR (agent/core/engines/draft_generator.js)
+---------------------------------------------------------
+- Fungsi: Pembuat draf SOP otomatis.
+- Cara Kerja: Begitu mendeteksi ada pertanyaan baru, sistem ini akan merangkum obrolan AI dengan warga menjadi struktur data JSON rapi. Termasuk menyarankan Judul, Ringkasan, Tag, Keyword, dan Kategori. Hasil ini siap disajikan kepada Admin untuk diperiksa.
+
+5. SUGGESTION ORCHESTRATOR & REPOSITORY (agent/core/engines/knowledge_suggestion.js & config/repositories/knowledge_suggestion.repository.js)
+---------------------------------------------------------
+- Fungsi: Otak pengatur lalu lintas dari sistem pembelajaran ini.
+- Cara Kerja:
+  a. Memeriksa database melalui Repository: "Apakah topik ini sudah pernah ditanyakan sebelumnya?"
+  b. Jika SUDAH PERNAH: Sistem TIDAK akan membuat draf baru (mencegah spam/duplikat). Sistem hanya akan menaikkan angka `frequency_count` (+1).
+  c. Jika BELUM PERNAH: Sistem akan menyuruh Generator membuat draf, lalu menyimpannya ke database dengan status "pending".
+
+
+====================================================================
+KESIMPULAN:
+Goro AI kini memiliki sistem "Learning Loop". Setiap ada pertanyaan baru dari warga, AI akan bekerja di balik layar, membuatkan draf jawabannya, dan menyodorkannya ke database Anda. Anda selaku Admin hanya perlu me-review draf tersebut di sistem buatan Anda sendiri, lalu menyetujuinya (Approve) agar resmi masuk ke tabel Knowledge! 🚀
