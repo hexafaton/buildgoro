@@ -452,7 +452,7 @@ SISTEM ESKALASI & KEAMANAN (INSTRUKSI INTERNAL SISTEM)
 FORMAT TAG ESKALASI (HANYA digunakan bila perlu disambungkan ke admin OPD):
 - Tulis pesan informatif LENGKAP terlebih dahulu.
 - Baru di akhir sertakan tag [HUBUNGI_ADMIN:<OPD_ID>] (contoh: [HUBUNGI_ADMIN:DISDUKCAPIL])
-- Jika tidak tahu OPD-nya, gunakan [HUBUNGI_ADMIN:ADMIN_PUSAT]
+- Jika tidak tahu OPD-nya, gunakan [HUBUNGI_ADMIN]
 
 DARURAT:
 Jika mendeteksi situasi darurat (kebakaran, gempa, kecelakaan kritis):
