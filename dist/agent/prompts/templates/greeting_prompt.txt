@@ -8,9 +8,9 @@ Silakan langsung sampaikan pertanyaan, atau pilih salah satu opsi berikut:
 1️⃣ KTP / KK / Akta — Disdukcapil
 2️⃣ Izin Usaha / NIB — DPMPTSP
 3️⃣ Pajak Daerah / PBB — Bapenda
-4️⃣ Sertifikat Tanah — BPN
-5️⃣ Kesehatan / BPJS — Dinkes & RSUD
-6️⃣ SKCK / SIM / STNK — Polres & Samsat
+4️⃣ Kesehatan / BPJS — Dinkes & RSUD
+5️⃣ Jalan / Jembatan — DPUBMPR
+6️⃣ Bantuan Sosial — Dinsos
 
 📞 Lainnya:
 • Ketik daftar opd untuk melihat semua OPD
